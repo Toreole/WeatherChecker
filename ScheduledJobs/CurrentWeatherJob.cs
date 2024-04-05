@@ -9,14 +9,12 @@ public class CurrentWeatherJob : IJob
 	public async Task Execute(IJobExecutionContext context)
 	{
 		OpenMeteoClient client = new();
-		Console.WriteLine("CurrentWeatherJob Execute");
 		var result = await client.QueryAsync(OpenMeteoHelper.CurrentWeatherOptions);
 
 		var currentData = result?.Current;
 		if (currentData == null)
 		{
 			//Log that it has failed.
-			Console.WriteLine("result null");
 			return;
 		}
 		using WeatherDBContext dbContext = new();
@@ -26,7 +24,7 @@ public class CurrentWeatherJob : IJob
 			Temperature = currentData.Temperature_2m ?? -1000,
 			Windspeed = currentData.Windspeed_10m ?? -1,
 			WeatherCode = (WeatherCode?)currentData.Weathercode ?? WeatherCode.UNKNOWN,
-			Timestamp = DateTimeOffset.Now
+			Timestamp = DateTimeOffset.Now.ToLocalTime()
 		});
 		await dbContext.SaveChangesAsync();
 	}

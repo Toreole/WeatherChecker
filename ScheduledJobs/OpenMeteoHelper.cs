@@ -14,8 +14,8 @@ internal static class OpenMeteoHelper
 			if (currentWeatherOptions == null)
 			{
 				currentWeatherOptions = new WeatherForecastOptions(
-					latitude: 0,
-					longitude: 0
+					latitude: WeatherCheckerService.config.latitude,
+					longitude: WeatherCheckerService.config.longitude
 				);
 				currentWeatherOptions.Current.Add(CurrentOptionsParameter.weathercode);
 				currentWeatherOptions.Current.Add(CurrentOptionsParameter.temperature_2m);

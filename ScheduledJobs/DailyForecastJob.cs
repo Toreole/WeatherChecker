@@ -23,15 +23,23 @@ public class DailyForecastJob : IJob
 		var now = DateTimeOffset.Now;
 		for (int i = 0; i < hourlyData.Time?.Length; i++)
 		{
-			dbContext.Forecasts.Add(new()
+			try
 			{
-				Humidity = hourlyData.Relativehumidity_2m?[i] ?? -1,
-				Temperature = hourlyData.Temperature_2m?[i] ?? -1000,
-				Windspeed = hourlyData.Windspeed_10m?[i] ?? -1,
-				WeatherCode = (WeatherCode?)hourlyData.Weathercode?[i] ?? WeatherCode.UNKNOWN,
-				ForecastTimestamp = now,
-				PredictionTimestamp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(hourlyData.Time[i]))
-			});
+				var forecast = new ForecastWeatherData()
+				{
+					Humidity = hourlyData.Relativehumidity_2m?[i] ?? -1,
+					Temperature = hourlyData.Temperature_2m?[i] ?? -1000,
+					Windspeed = hourlyData.Windspeed_10m?[i] ?? -1,
+					WeatherCode = (WeatherCode?)hourlyData.Weathercode?[i] ?? WeatherCode.UNKNOWN,
+					ForecastTimestamp = now.ToLocalTime(),
+					PredictionTimestamp = DateTimeOffset.Parse(hourlyData.Time[i]).ToLocalTime()
+				};
+				dbContext.Forecasts.Add(forecast);
+			} 
+			catch (Exception ex)
+			{
+				Console.WriteLine($"hourly time in unexpected format: {hourlyData.Time[0]}");
+			}
 		}
 		await dbContext.SaveChangesAsync();
 	}
