@@ -2,6 +2,8 @@
 
 public enum WeatherCode
 {
+	UNKNOWN = -1,
+
 	ClearSky = 0,
 	Mainly_Clear = 1,
 	Partly_Cloud = 2,
