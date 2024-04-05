@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace WeatherChecker.Data;
 
 [PrimaryKey(nameof(Id))]
-[Index(nameof(Id), nameof(PredictionTimestamp), nameof(ForecastTimestamp))]
+[Index(nameof(Id))]
+[Index(nameof(PredictionTimestamp))]
+[Index(nameof(ForecastTimestamp))]
 public class ForecastWeatherData
 {
 	[Key]

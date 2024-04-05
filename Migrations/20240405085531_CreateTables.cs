@@ -53,14 +53,29 @@ namespace WeatherChecker.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Forecasts_Id_PredictionTimestamp_ForecastTimestamp",
+                name: "IX_Forecasts_ForecastTimestamp",
                 table: "Forecasts",
-                columns: new[] { "Id", "PredictionTimestamp", "ForecastTimestamp" });
+                column: "ForecastTimestamp");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MeasuredWeatherData_Id_Timestamp",
+                name: "IX_Forecasts_Id",
+                table: "Forecasts",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Forecasts_PredictionTimestamp",
+                table: "Forecasts",
+                column: "PredictionTimestamp");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MeasuredWeatherData_Id",
                 table: "MeasuredWeatherData",
-                columns: new[] { "Id", "Timestamp" });
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MeasuredWeatherData_Timestamp",
+                table: "MeasuredWeatherData",
+                column: "Timestamp");
         }
 
         /// <inheritdoc />

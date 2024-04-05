@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations;
 namespace WeatherChecker.Data;
 
 [PrimaryKey(nameof(Id))]
-[Index(nameof(Id), nameof(Timestamp))]
+[Index(nameof(Id))]
+[Index(nameof(Timestamp))]
 public class ActualWeatherData
 {
 	[Key]

@@ -12,7 +12,7 @@ using WeatherChecker.Data;
 namespace WeatherChecker.Migrations
 {
     [DbContext(typeof(WeatherDBContext))]
-    [Migration("20240404235749_CreateTables")]
+    [Migration("20240405085531_CreateTables")]
     partial class CreateTables
     {
         /// <inheritdoc />
@@ -50,7 +50,9 @@ namespace WeatherChecker.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id", "Timestamp");
+                    b.HasIndex("Id");
+
+                    b.HasIndex("Timestamp");
 
                     b.ToTable("MeasuredWeatherData");
                 });
@@ -83,7 +85,11 @@ namespace WeatherChecker.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id", "PredictionTimestamp", "ForecastTimestamp");
+                    b.HasIndex("ForecastTimestamp");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("PredictionTimestamp");
 
                     b.ToTable("Forecasts");
                 });
