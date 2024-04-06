@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeatherChecker.Data;
 
@@ -11,9 +12,11 @@ using WeatherChecker.Data;
 namespace WeatherChecker.Migrations
 {
     [DbContext(typeof(WeatherDBContext))]
-    partial class WeatherDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240406215018_AddLocation")]
+    partial class AddLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

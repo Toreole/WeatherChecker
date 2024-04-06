@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
@@ -11,7 +10,7 @@ using WeatherChecker.Data;
 using Discord.WebSocket;
 using Discord.Interactions;
 using WeatherChecker.DiscordBot;
-using Discord.Rest;
+using WeatherChecker.ScheduledJobs;
 
 namespace WeatherChecker;
 

@@ -43,7 +43,7 @@ internal class WeatherCheckerService : BackgroundService
 			.Build();
 		trigger = TriggerBuilder.Create()
 			.StartNow()
-			.WithCronSchedule("5 0 12 * * ?") //5 seconds, 0 minutes, 12:00, every day
+			.WithCronSchedule("0 30 12 * * ?") //0 seconds, 30 minutes, 12:30, every day
 			.Build();
 		await scheduler.ScheduleJob(job, trigger, cancellationToken);
 		await Task.Delay(-1);
