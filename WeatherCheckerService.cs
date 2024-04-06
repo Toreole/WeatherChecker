@@ -3,10 +3,11 @@ using Quartz;
 using System.Configuration;
 using WeatherChecker.ScheduledJobs;
 using WeatherChecker.Jobs;
+using Microsoft.Extensions.Hosting;
 
 namespace WeatherChecker;
 
-internal class WeatherCheckerService
+internal class WeatherCheckerService : BackgroundService
 {
 	internal static readonly WeatherConfig config;
 
@@ -22,8 +23,9 @@ internal class WeatherCheckerService
 		);
 	}
 
-	public async Task Run(CancellationToken cancellationToken = default)
+	protected override async Task ExecuteAsync(CancellationToken cancellationToken)
 	{
+		Console.WriteLine("Setting up WeatherCheckerService...");
 		scheduler = await new StdSchedulerFactory()
 			.GetScheduler(cancellationToken);
 
@@ -44,7 +46,7 @@ internal class WeatherCheckerService
 			.WithCronSchedule("5 0 12 * * ?") //5 seconds, 0 minutes, 12:00, every day
 			.Build();
 		await scheduler.ScheduleJob(job, trigger, cancellationToken);
-
+		await Task.Delay(-1);
 	}
 
 	public async Task Shutdown() 
