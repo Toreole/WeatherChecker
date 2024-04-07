@@ -1,9 +1,8 @@
 ﻿using OpenMeteo;
 using Quartz;
 using WeatherChecker.Data;
-using WeatherChecker.ScheduledJobs;
 
-namespace WeatherChecker.Jobs;
+namespace WeatherChecker.ScheduledJobs;
 
 public class DailyForecastJob : IJob
 {
@@ -13,7 +12,7 @@ public class DailyForecastJob : IJob
 		OpenMeteoClient client = new();
 
 		var forecastOptions = OpenMeteoHelper.DailyForecastOptions;
-		var locations = dbContext.Set<Location>();
+		var locations = dbContext.Set<Location>().ToList();
 
 		foreach (var location in locations)
 		{
@@ -26,33 +25,41 @@ public class DailyForecastJob : IJob
 				//Log that it has failed.
 				return;
 			}
-			var now = DateTimeOffset.Now;
+			//create Forecast
+			Forecast forecast = new()
+			{
+				Timestamp = DateTime.Now,
+				Location = location,
+				LocationId = location.Id,
+			};
+			dbContext.Forecasts.Add(forecast);
+			await dbContext.SaveChangesAsync();
+
 			for (int i = 0; i < hourlyData.Time?.Length; i++)
 			{
-				var forecast = new ForecastWeatherData()
+				var forecastData = new ForecastWeatherData()
 				{
-					Humidity = hourlyData.Relativehumidity_2m?[i] ?? -1,
+					Humidity = hourlyData.Relative_humidity_2m?[i] ?? -1,
 					Temperature = hourlyData.Temperature_2m?[i] ?? -1000,
-					Windspeed = hourlyData.Windspeed_10m?[i] ?? -1,
-					WeatherCode = (WeatherCode?)hourlyData.Weathercode?[i] ?? WeatherCode.UNKNOWN,
-					ForecastTimestamp = now.ToLocalTime(),
+					Windspeed = hourlyData.Wind_speed_10m?[i] ?? -1,
+					WeatherCode = (WeatherCode?)hourlyData.Weather_code?[i] ?? WeatherCode.UNKNOWN,
 					PredictionTimestamp = DateTimeOffset.Parse(hourlyData.Time[i]).ToLocalTime(),
 
-					WindDirection = hourlyData.Winddirection_10m?[i] ?? -1,
+					WindDirection = hourlyData.Wind_direction_10m?[i] ?? -1,
 					Visibility = hourlyData.Visibility?[i] ?? -1,
 					Showers = hourlyData.Showers?[i] ?? -1,
 					Rain = hourlyData.Rain?[i] ?? -1,
 					Snowfall = hourlyData.Snowfall?[i] ?? -1,
 					PrecipitationProbability = hourlyData.Precipitation_probability?[i] ?? -1,
 					SurfacePressure = hourlyData.Surface_pressure?[i] ?? -1,
-					SoilMoisture_1_3cm = hourlyData.Soil_moisture_1_3cm?[i] ?? -1,
+					SoilMoisture_1_3cm = hourlyData.Soil_moisture_1_to_3cm?[i] ?? -1,
 					SoilTemperature_6cm = hourlyData.Soil_temperature_6cm?[i] ?? -1,
-					CloudCoverTotal = hourlyData.Cloudcover?[i] ?? -1,
+					CloudCoverTotal = hourlyData.Cloud_cover?[i] ?? -1,
 
-					Location = location,
-					LocationId = location.Id
+					Forecast = forecast,
+					ForecastId = forecast.Id
 				};
-				dbContext.Forecasts.Add(forecast);
+				dbContext.ForecastWeatherData.Add(forecastData);
 			}
 			await dbContext.SaveChangesAsync();
 			await Task.Delay(500);

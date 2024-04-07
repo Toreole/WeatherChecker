@@ -7,8 +7,9 @@ namespace WeatherChecker.Data;
 public class WeatherDBContext : DbContext
 {
 	public DbSet<ActualWeatherData> MeasuredWeatherData { get; set; }
-	public DbSet<ForecastWeatherData> Forecasts { get; set; }
-	public DbSet<Location> Location { get; set; }
+	public DbSet<Forecast> Forecasts { get; set; }
+	public DbSet<ForecastWeatherData> ForecastWeatherData { get; set; }
+	public DbSet<Location> Locations { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{

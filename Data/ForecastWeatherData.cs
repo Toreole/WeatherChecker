@@ -7,7 +7,7 @@ namespace WeatherChecker.Data;
 [PrimaryKey(nameof(Id))]
 [Index(nameof(Id))]
 [Index(nameof(PredictionTimestamp))]
-[Index(nameof(ForecastTimestamp))]
+[Index(nameof(ForecastId))]
 public class ForecastWeatherData
 {
 	[Key]
@@ -19,10 +19,6 @@ public class ForecastWeatherData
 	/// </summary>
 	public DateTimeOffset PredictionTimestamp { get; set; }
 
-	/// <summary>
-	/// The timestamp of when the forecast was made.
-	/// </summary>
-	public DateTimeOffset ForecastTimestamp { get; set; }
 	public float Temperature { get; set; }
 	public float Humidity { get; set; }
 	public float Windspeed { get; set; }
@@ -42,7 +38,6 @@ public class ForecastWeatherData
 	public float SoilTemperature_6cm { get; set; }
 	public float SoilMoisture_1_3cm { get; set; }
 
-
-	public int LocationId { get; set; }
-	public Location Location { get; set; } = null!;
+	public int ForecastId { get; set; }
+	public Forecast Forecast { get; set; } = null!;
 }

@@ -12,8 +12,8 @@ using WeatherChecker.Data;
 namespace WeatherChecker.Migrations
 {
     [DbContext(typeof(WeatherDBContext))]
-    [Migration("20240406215018_AddLocation")]
-    partial class AddLocation
+    [Migration("20240407161129_CreateTables")]
+    partial class CreateTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,11 +33,35 @@ namespace WeatherChecker.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<float>("CloudCoverTotal")
+                        .HasColumnType("float");
+
                     b.Property<float>("Humidity")
                         .HasColumnType("float");
 
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
+
+                    b.Property<float>("PrecipitationProbability")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Rain")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Showers")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Snowfall")
+                        .HasColumnType("float");
+
+                    b.Property<float>("SoilMoisture_1_3cm")
+                        .HasColumnType("float");
+
+                    b.Property<float>("SoilTemperature_6cm")
+                        .HasColumnType("float");
+
+                    b.Property<float>("SurfacePressure")
+                        .HasColumnType("float");
 
                     b.Property<float>("Temperature")
                         .HasColumnType("float");
@@ -45,8 +69,14 @@ namespace WeatherChecker.Migrations
                     b.Property<DateTimeOffset>("Timestamp")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<float>("Visibility")
+                        .HasColumnType("float");
+
                     b.Property<int>("WeatherCode")
                         .HasColumnType("int");
+
+                    b.Property<float>("WindDirection")
+                        .HasColumnType("float");
 
                     b.Property<float>("Windspeed")
                         .HasColumnType("float");
@@ -62,6 +92,27 @@ namespace WeatherChecker.Migrations
                     b.ToTable("MeasuredWeatherData");
                 });
 
+            modelBuilder.Entity("WeatherChecker.Data.Forecast", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Forecasts");
+                });
+
             modelBuilder.Entity("WeatherChecker.Data.ForecastWeatherData", b =>
                 {
                     b.Property<int>("Id")
@@ -70,38 +121,63 @@ namespace WeatherChecker.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("ForecastTimestamp")
-                        .HasColumnType("datetime(6)");
+                    b.Property<float>("CloudCoverTotal")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ForecastId")
+                        .HasColumnType("int");
 
                     b.Property<float>("Humidity")
                         .HasColumnType("float");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
+                    b.Property<float>("PrecipitationProbability")
+                        .HasColumnType("float");
 
                     b.Property<DateTimeOffset>("PredictionTimestamp")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<float>("Rain")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Showers")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Snowfall")
+                        .HasColumnType("float");
+
+                    b.Property<float>("SoilMoisture_1_3cm")
+                        .HasColumnType("float");
+
+                    b.Property<float>("SoilTemperature_6cm")
+                        .HasColumnType("float");
+
+                    b.Property<float>("SurfacePressure")
+                        .HasColumnType("float");
+
                     b.Property<float>("Temperature")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Visibility")
                         .HasColumnType("float");
 
                     b.Property<int>("WeatherCode")
                         .HasColumnType("int");
+
+                    b.Property<float>("WindDirection")
+                        .HasColumnType("float");
 
                     b.Property<float>("Windspeed")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ForecastTimestamp");
+                    b.HasIndex("ForecastId");
 
                     b.HasIndex("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("PredictionTimestamp");
 
-                    b.ToTable("Forecasts");
+                    b.ToTable("ForecastWeatherData");
                 });
 
             modelBuilder.Entity("WeatherChecker.Data.Location", b =>
@@ -128,7 +204,7 @@ namespace WeatherChecker.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("WeatherChecker.Data.ActualWeatherData", b =>
@@ -142,7 +218,7 @@ namespace WeatherChecker.Migrations
                     b.Navigation("Location");
                 });
 
-            modelBuilder.Entity("WeatherChecker.Data.ForecastWeatherData", b =>
+            modelBuilder.Entity("WeatherChecker.Data.Forecast", b =>
                 {
                     b.HasOne("WeatherChecker.Data.Location", "Location")
                         .WithMany()
@@ -151,6 +227,22 @@ namespace WeatherChecker.Migrations
                         .IsRequired();
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("WeatherChecker.Data.ForecastWeatherData", b =>
+                {
+                    b.HasOne("WeatherChecker.Data.Forecast", "Forecast")
+                        .WithMany("ForecastWeatherData")
+                        .HasForeignKey("ForecastId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Forecast");
+                });
+
+            modelBuilder.Entity("WeatherChecker.Data.Forecast", b =>
+                {
+                    b.Navigation("ForecastWeatherData");
                 });
 #pragma warning restore 612, 618
         }

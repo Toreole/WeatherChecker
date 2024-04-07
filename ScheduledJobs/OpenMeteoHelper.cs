@@ -31,6 +31,7 @@ internal static class OpenMeteoHelper
 				currentWeatherOptions.Current.Add(CurrentOptionsParameter.wind_gusts_10m);
 				// this is allowed via the API
 				currentWeatherOptions.Current.Add(HourlyOptionsParameter.visibility);
+				currentWeatherOptions.Current.Add(HourlyOptionsParameter.precipitation_probability);
 				currentWeatherOptions.Current.Add(HourlyOptionsParameter.soil_temperature_6cm);
 				currentWeatherOptions.Current.Add(HourlyOptionsParameter.soil_moisture_1_to_3cm);
 			}
@@ -52,19 +53,20 @@ internal static class OpenMeteoHelper
 				};
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.weather_code);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.temperature_2m);
-				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.windspeed_10m);
-				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.relativehumidity_2m);
+				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.wind_speed_10m);
+				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.relative_humidity_2m);
 
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.surface_pressure);
-				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.winddirection_10m);
+				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.wind_direction_10m);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.rain);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.showers);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.snowfall);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.cloud_cover);
-				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.windgusts_10m);
+				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.wind_gusts_10m);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.soil_moisture_1_to_3cm);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.soil_temperature_6cm);
 				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.visibility);
+				dailyForecastOptions.Hourly.Add(HourlyOptionsParameter.precipitation_probability);
 			}
 			dailyForecastOptions.Start_date = DateTimeOffset.Now
 				.AddDays(1)
