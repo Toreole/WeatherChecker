@@ -22,7 +22,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Quartz.Jobs" Version="3.8.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
@@ -32,6 +31,12 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenMeteo">
+      <HintPath>Library\OpenMeteo.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
