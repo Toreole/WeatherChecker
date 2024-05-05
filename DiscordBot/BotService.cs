@@ -31,25 +31,12 @@ namespace WeatherChecker.DiscordBot
 			//_logger.LogInformation();
 
 			await _interactionService.AddModuleAsync<NextSunnyDayCommand>(_serviceProvider).ConfigureAwait(false);
-			var module = await _interactionService.AddModuleAsync<HelloCommand>(_serviceProvider).ConfigureAwait(false);
-			foreach(var command in module.SlashCommands)
-			{
-				Console.WriteLine(string.Join(' ', command.ContextTypes.Select(x => x.ToString())));
-				Console.WriteLine(command.CommandType);
-			}
 
 			_discordClient.Ready += OnReady;
 			_discordClient.InteractionCreated += OnInteractionCreated;
-			//_discordClient.SlashCommandExecuted += SlashCommandHandler;
-
 			
 			await _discordClient.LoginAsync(Discord.TokenType.Bot, ConfigurationManager.AppSettings.Get("discord_token")).ConfigureAwait(false);
 			await _discordClient.StartAsync().ConfigureAwait(false);
-		}
-
-		private async Task SlashCommandHandler(SocketSlashCommand command)
-		{
-			await command.RespondAsync($"You executed {command.Data.Name}");
 		}
 
 		public override Task StopAsync(CancellationToken cancellationToken)
@@ -70,21 +57,6 @@ namespace WeatherChecker.DiscordBot
 		private async Task OnReady()
 		{
 			Console.WriteLine("OnReady");
-
-			//var command = new SlashCommandBuilder()
-			//	.WithName("hello")
-			//	.WithDescription("says hello")
-			//	.WithIntegrationTypes(ApplicationIntegrationType.UserInstall)
-			//	.WithContextTypes(InteractionContextType.BotDm, InteractionContextType.Guild, InteractionContextType.PrivateChannel);
-
-			//var other = new SlashCommandBuilder()
-			//	.WithName("sun")
-			//	.WithDescription("uhm")
-			//	.WithIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
-			//	.WithContextTypes(InteractionContextType.BotDm, InteractionContextType.Guild, InteractionContextType.PrivateChannel);
-
-			//await _discordClient.CreateGlobalApplicationCommandAsync(command.Build());
-			//await _discordClient.CreateGlobalApplicationCommandAsync(other.Build());
 			await _discordClient.SetStatusAsync(Discord.UserStatus.Online);
 			await _discordClient.SetGameAsync("Looking directly at the sun...");
 			await _interactionService.RegisterCommandsGloballyAsync();

@@ -10,6 +10,7 @@ public class WeatherDBContext : DbContext
 	public DbSet<Forecast> Forecasts { get; set; }
 	public DbSet<ForecastWeatherData> ForecastWeatherData { get; set; }
 	public DbSet<Location> Locations { get; set; }
+	public DbSet<UserPreferences> UserPreferences { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
