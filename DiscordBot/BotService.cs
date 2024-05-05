@@ -31,6 +31,7 @@ namespace WeatherChecker.DiscordBot
 			//_logger.LogInformation();
 
 			await _interactionService.AddModuleAsync<NextSunnyDayCommand>(_serviceProvider).ConfigureAwait(false);
+			await _interactionService.AddModuleAsync<LocationManagementCommands>(_serviceProvider).ConfigureAwait(false);
 
 			_discordClient.Ready += OnReady;
 			_discordClient.InteractionCreated += OnInteractionCreated;
@@ -48,8 +49,10 @@ namespace WeatherChecker.DiscordBot
 		{
 			var context = new SocketInteractionContext(_discordClient, interaction);
 			IResult result = await _interactionService.ExecuteCommandAsync(context, _serviceProvider);
+			Console.WriteLine($"interaction {result}");
 			if (!result.IsSuccess)
 			{
+				Console.WriteLine("interaction failed.");
 				await interaction.RespondAsync("Something went wrong :(");
 			}
 		}

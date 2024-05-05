@@ -24,7 +24,8 @@ namespace WeatherChecker.Migrations
                     Name = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Latitude = table.Column<float>(type: "float", nullable: false),
-                    Longitude = table.Column<float>(type: "float", nullable: false)
+                    Longitude = table.Column<float>(type: "float", nullable: false),
+                    ActiveTracking = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,6 +83,27 @@ namespace WeatherChecker.Migrations
                     table.ForeignKey(
                         name: "FK_MeasuredWeatherData_Locations_LocationId",
                         column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "UserPreferences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    DiscordSnowflake = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    DefaultLocationId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPreferences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPreferences_Locations_DefaultLocationId",
+                        column: x => x.DefaultLocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -167,6 +189,16 @@ namespace WeatherChecker.Migrations
                 name: "IX_MeasuredWeatherData_Timestamp",
                 table: "MeasuredWeatherData",
                 column: "Timestamp");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPreferences_DefaultLocationId",
+                table: "UserPreferences",
+                column: "DefaultLocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPreferences_DiscordSnowflake",
+                table: "UserPreferences",
+                column: "DiscordSnowflake");
         }
 
         /// <inheritdoc />
@@ -177,6 +209,9 @@ namespace WeatherChecker.Migrations
 
             migrationBuilder.DropTable(
                 name: "MeasuredWeatherData");
+
+            migrationBuilder.DropTable(
+                name: "UserPreferences");
 
             migrationBuilder.DropTable(
                 name: "Forecasts");

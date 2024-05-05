@@ -15,6 +15,7 @@ public class CurrentWeatherJob : IJob
 
 		foreach (var location in locations)
 		{
+			if (location.ActiveTracking is false) continue;
 			openMeteoSettings.Latitude = location.Latitude;
 			openMeteoSettings.Longitude = location.Longitude;
 			var result = await client.QueryAsync(openMeteoSettings);

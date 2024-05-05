@@ -1,15 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeatherChecker.Data;
 
-[PrimaryKey(nameof(DiscordSnowflake))]
 [Index(nameof(DiscordSnowflake))]
-public class UserPreferences(ulong snowflake) //ooouh new feature
+public class UserPreferences
 {
 	[Key]
-	public ulong DiscordSnowflake { get; } = snowflake;
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	public int Id { get; set; }
+
+	[Required]
+	public ulong DiscordSnowflake { get; set; }
 
 	public int DefaultLocationId { get; set; } = -1;
 	public Location? DefaultLocation { get; set; }
+
+	public UserPreferences()
+	{
+
+	}
+	public UserPreferences(ulong snowflake)
+	{
+		DiscordSnowflake = snowflake;
+	}
 }

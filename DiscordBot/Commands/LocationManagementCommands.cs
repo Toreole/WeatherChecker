@@ -12,23 +12,27 @@ public class LocationManagementCommands : InteractionModuleBase<SocketInteractio
 	[SlashCommand("setlocation", "Sets your default location when invoking commands.")]
 	[Alias("sl")]
 	[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-	[IntegrationType(ApplicationIntegrationType.UserInstall)]
+	[IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 	public async Task SetUserLocation(string locationName)
 	{
+		Console.WriteLine("SetLocation Command");
 		using WeatherDBContext dbContext = new();
 		var userPref = dbContext.UserPreferences.FirstOrDefault(x => x.DiscordSnowflake == Context.User.Id);
 		if (userPref is null)
 		{
+			Console.WriteLine($"Creating new UserPref for {Context.User.GlobalName}");
 			userPref = new(Context.User.Id);
 			dbContext.UserPreferences.Add(userPref);
 		}
-		var location = dbContext.Locations.FirstOrDefault(x => EF.Functions.Like($"{locationName}%", x.Name));
+		var location = dbContext.Locations.FirstOrDefault(x => EF.Functions.Like(x.Name, $"{locationName}%"));
 		if (location is null)
 		{
+			Console.WriteLine($"Could not find location like {locationName}");
 			await RespondAsync($"Could not find location with name like '{locationName}'.", ephemeral: true);
 		}
 		else
 		{
+			Console.WriteLine("Set.");
 			userPref.DefaultLocation = location;
 			userPref.DefaultLocationId = location.Id;
 			dbContext.UserPreferences.Update(userPref);
@@ -40,11 +44,12 @@ public class LocationManagementCommands : InteractionModuleBase<SocketInteractio
 	[SlashCommand("addlocation", "Creates a new location to track weather data for.")]
 	[Alias("addl")]
 	[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-	[IntegrationType(ApplicationIntegrationType.UserInstall)]
+	[IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 	public async Task AddLocation(string locationName, float latitude, float longitude)
 	{
+		Console.WriteLine("AddLocation Command");
 		using WeatherDBContext dbContext = new();
-		var location = dbContext.Locations.FirstOrDefault(x => x.Name == locationName);
+		var location = dbContext.Locations.FirstOrDefault(x => EF.Functions.Like(x.Name, $"{locationName}%"));
 		if (location is not null)
 		{
 			await RespondAsync("Location with name already exists.", ephemeral: true);
@@ -61,21 +66,35 @@ public class LocationManagementCommands : InteractionModuleBase<SocketInteractio
 	[SlashCommand("setlocationactive", "Sets whether the weather data for this location should be gathered.")]
 	[Alias("sla")]
 	[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-	[IntegrationType(ApplicationIntegrationType.UserInstall)]
+	[IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 	public async Task UpdateLocationStatus(string locationName, bool trackWeather)
 	{
+		Console.WriteLine("UpdateLocation Command");
 		using WeatherDBContext dbContext = new();
-		var location = dbContext.Locations.FirstOrDefault(x => EF.Functions.Like($"{locationName}%", x.Name));
+		var location = dbContext.Locations.FirstOrDefault(x => x.Name == locationName);
 		if (location is null)
 		{
-			await RespondAsync($"Could not find location with name like '{locationName}'.", ephemeral: true);
+			Console.WriteLine($"Could not find location with name '{locationName}'.");
+			await RespondAsync($"Could not find location with name '{locationName}'.", ephemeral: true);
 		} 
 		else
 		{
 			location.ActiveTracking = trackWeather;
 			dbContext.Update(location);
 			dbContext.SaveChanges();
+			Console.WriteLine($"Updated location {locationName} with id {location.Id}");
 			await RespondAsync("Updated.", ephemeral: true);
 		}
+	}
+
+	[SlashCommand("listlocations", "Lists all tracked locations.")]
+	[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
+	[IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
+	public async Task ListLocations()
+	{
+		using WeatherDBContext dBContext = new();
+		var locations = dBContext.Locations.Where(x => x.ActiveTracking == true).Select(x => x.Name).ToList();
+		var text = string.Join("\n", locations);
+		await RespondAsync(text, ephemeral: true);
 	}
 }

@@ -185,6 +185,9 @@ namespace WeatherChecker.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("ActiveTracking")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<float>("Latitude")
                         .HasColumnType("float");
 
@@ -202,6 +205,29 @@ namespace WeatherChecker.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("WeatherChecker.Data.UserPreferences", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DefaultLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<ulong>("DiscordSnowflake")
+                        .HasColumnType("bigint unsigned");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DefaultLocationId");
+
+                    b.HasIndex("DiscordSnowflake");
+
+                    b.ToTable("UserPreferences");
                 });
 
             modelBuilder.Entity("WeatherChecker.Data.ActualWeatherData", b =>
@@ -235,6 +261,17 @@ namespace WeatherChecker.Migrations
                         .IsRequired();
 
                     b.Navigation("Forecast");
+                });
+
+            modelBuilder.Entity("WeatherChecker.Data.UserPreferences", b =>
+                {
+                    b.HasOne("WeatherChecker.Data.Location", "DefaultLocation")
+                        .WithMany()
+                        .HasForeignKey("DefaultLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DefaultLocation");
                 });
 
             modelBuilder.Entity("WeatherChecker.Data.Forecast", b =>
