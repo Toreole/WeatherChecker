@@ -17,13 +17,6 @@ public class LocationManagementCommands : InteractionModuleBase<SocketInteractio
 	{
 		Console.WriteLine("SetLocation Command");
 		using WeatherDBContext dbContext = new();
-		var userPref = dbContext.UserPreferences.FirstOrDefault(x => x.DiscordSnowflake == Context.User.Id);
-		if (userPref is null)
-		{
-			Console.WriteLine($"Creating new UserPref for {Context.User.GlobalName}");
-			userPref = new(Context.User.Id);
-			dbContext.UserPreferences.Add(userPref);
-		}
 		var location = dbContext.Locations.FirstOrDefault(x => EF.Functions.Like(x.Name, $"{locationName}%"));
 		if (location is null)
 		{
@@ -32,13 +25,28 @@ public class LocationManagementCommands : InteractionModuleBase<SocketInteractio
 		}
 		else
 		{
-			Console.WriteLine("Set.");
-			userPref.DefaultLocation = location;
-			userPref.DefaultLocationId = location.Id;
-			dbContext.UserPreferences.Update(userPref);
+			var userPref = dbContext.UserPreferences.FirstOrDefault(x => x.DiscordSnowflake == Context.User.Id);
+			if (userPref is null)
+			{
+				Console.WriteLine($"Creating new UserPref for {Context.User.GlobalName} with id {Context.User.Id}");
+				userPref = new(Context.User.Id)
+				{
+					DefaultLocation = location,
+					DefaultLocationId = location.Id
+				};
+				dbContext.UserPreferences.Add(userPref);
+				dbContext.SaveChanges();
+			} 
+			else
+			{
+				Console.WriteLine("Set.");
+				userPref.DefaultLocation = location;
+				userPref.DefaultLocationId = location.Id;
+				dbContext.UserPreferences.Update(userPref);
+				dbContext.SaveChanges();
+			}
 			await RespondAsync($"Set your location to {location.Name} @ {location.Latitude:00.000}° lat, {location.Latitude:00.000}° lon", ephemeral: true);
 		}
-		dbContext.SaveChanges();
 	}
 
 	[SlashCommand("addlocation", "Creates a new location to track weather data for.")]
