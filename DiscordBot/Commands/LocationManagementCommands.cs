@@ -45,7 +45,7 @@ public class LocationManagementCommands : InteractionModuleBase<SocketInteractio
 				dbContext.UserPreferences.Update(userPref);
 				dbContext.SaveChanges();
 			}
-			await RespondAsync($"Set your location to {location.Name} @ {location.Latitude:00.000}° lat, {location.Latitude:00.000}° lon", ephemeral: true);
+			await RespondAsync($"Set your location to {location.Name} @ {location.Latitude:00.000}° lat, {location.Longitude:00.000}° lon", ephemeral: true);
 		}
 	}
 
